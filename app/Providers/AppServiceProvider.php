@@ -1,10 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Sleep;
 
-class AppServiceProvider extends ServiceProvider
+final class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -19,6 +29,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Model::shouldBeStrict();
+        Model::unguard();
+
+        Date::use(CarbonImmutable::class);
+
+        Vite::useAggressivePrefetching();
+
+        URL::forceHttps(
+            app()->isProduction()
+        );
+
+        DB::prohibitDestructiveCommands(
+            app()->isProduction()
+        );
+
+        Http::preventStrayRequests(
+            app()->runningUnitTests()
+        );
+
+        Sleep::fake(
+            app()->runningUnitTests()
+        );
     }
 }
