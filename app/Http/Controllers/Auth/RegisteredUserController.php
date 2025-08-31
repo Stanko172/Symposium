@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Auth;
 
+use _PHPStan_f9a2208af\OndraM\CiDetector\Ci\TeamCity;
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -37,6 +39,10 @@ final class RegisteredUserController extends Controller
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        $tenant = Tenant::query()->create();
+        $tenant->domains()->create(['domain' => 'foo.localhost']);
+
 
         $user = User::create([
             'name' => $request->name,
