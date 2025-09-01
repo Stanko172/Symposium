@@ -4,5 +4,5 @@ declare(strict_types=1);
 
 return [
     App\Providers\AppServiceProvider::class,
-    \Stancl\Tenancy\TenancyServiceProvider::class,
+    App\Providers\TenancyServiceProvider::class,
 ];
