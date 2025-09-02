@@ -13,7 +13,7 @@ use Stancl\Tenancy\Jobs;
 use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
 
-class TenancyServiceProvider extends ServiceProvider
+final class TenancyServiceProvider extends ServiceProvider
 {
     public static string $controllerNamespace = '';
 
@@ -28,9 +28,7 @@ class TenancyServiceProvider extends ServiceProvider
                     Jobs\MigrateDatabase::class,
                     // Jobs\SeedDatabase::class,
 
-                ])->send(function (Events\TenantCreated $event) {
-                    return $event->tenant;
-                })->shouldBeQueued(false),
+                ])->send(fn(Events\TenantCreated $event) => $event->tenant)->shouldBeQueued(false),
             ],
             Events\SavingTenant::class => [],
             Events\TenantSaved::class => [],
@@ -40,9 +38,7 @@ class TenancyServiceProvider extends ServiceProvider
             Events\TenantDeleted::class => [
                 JobPipeline::make([
                     Jobs\DeleteDatabase::class,
-                ])->send(function (Events\TenantDeleted $event) {
-                    return $event->tenant;
-                })->shouldBeQueued(false),
+                ])->send(fn(Events\TenantDeleted $event) => $event->tenant)->shouldBeQueued(false),
             ],
 
             // Domain events
@@ -101,7 +97,7 @@ class TenancyServiceProvider extends ServiceProvider
         $this->makeTenancyMiddlewareHighestPriority();
     }
 
-    protected function bootEvents(): void
+    private function bootEvents(): void
     {
         foreach ($this->events() as $event => $listeners) {
             foreach ($listeners as $listener) {
@@ -114,9 +110,9 @@ class TenancyServiceProvider extends ServiceProvider
         }
     }
 
-    protected function mapRoutes(): void
+    private function mapRoutes(): void
     {
-        $this->app->booted(function () {
+        $this->app->booted(function (): void {
             if (file_exists(base_path('routes/tenant.php'))) {
                 Route::namespace(static::$controllerNamespace)
                     ->group(base_path('routes/tenant.php'));
@@ -124,7 +120,7 @@ class TenancyServiceProvider extends ServiceProvider
         });
     }
 
-    protected function makeTenancyMiddlewareHighestPriority(): void
+    private function makeTenancyMiddlewareHighestPriority(): void
     {
         $tenancyMiddleware = [
             // Even higher priority than the initialization middleware
