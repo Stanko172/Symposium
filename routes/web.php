@@ -6,6 +6,10 @@ use App\Http\Controllers\Onboarding\OnboardingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/', static function () {
+    return Inertia::render('welcome');
+})->name('home');
+
 Route::middleware('auth')
     ->middleware('verified')
     ->get('/onboarding', [OnboardingController::class, 'index'])
