@@ -13,7 +13,7 @@ final class CreateTenantsTable extends Migration
         Schema::create('tenants', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->json('data')->nullable();
-            $table->boolean('is_onboarded')->default(false);;
+            $table->boolean('is_onboarded')->default(false);
 
             $table->timestamps();
         });

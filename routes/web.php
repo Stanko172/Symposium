@@ -13,7 +13,7 @@ Route::get('/', static function () {
 Route::middleware('auth')
     ->middleware('verified')
     ->get('/onboarding', [OnboardingController::class, 'index'])
-        ->name('onboarding.index');
+    ->name('onboarding.index');
 
 Route::middleware('auth')
     ->middleware('verified')

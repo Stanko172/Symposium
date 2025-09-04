@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-
 /**
  * @property-read bool $is_onboarded
  * @property-read bool $is_owner
@@ -28,6 +27,16 @@ final class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    public function isOnboarded(): bool
+    {
+        return $this->is_onboarded;
+    }
+
+    public function isOwner(): bool
+    {
+        return $this->is_owner;
+    }
+
     /**
      * @return array<string, string>
      */
@@ -37,15 +46,5 @@ final class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function isOnboarded(): bool
-    {
-        return $this->is_onboarded;
-    }
-
-    public function isOwner(): bool
-    {
-        return $this->is_owner;
     }
 }

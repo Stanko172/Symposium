@@ -28,7 +28,7 @@ final class TenancyServiceProvider extends ServiceProvider
                     Jobs\MigrateDatabase::class,
                     // Jobs\SeedDatabase::class,
 
-                ])->send(fn(Events\TenantCreated $event) => $event->tenant)->shouldBeQueued(false),
+                ])->send(fn (Events\TenantCreated $event) => $event->tenant)->shouldBeQueued(false),
             ],
             Events\SavingTenant::class => [],
             Events\TenantSaved::class => [],
@@ -38,7 +38,7 @@ final class TenancyServiceProvider extends ServiceProvider
             Events\TenantDeleted::class => [
                 JobPipeline::make([
                     Jobs\DeleteDatabase::class,
-                ])->send(fn(Events\TenantDeleted $event) => $event->tenant)->shouldBeQueued(false),
+                ])->send(fn (Events\TenantDeleted $event) => $event->tenant)->shouldBeQueued(false),
             ],
 
             // Domain events

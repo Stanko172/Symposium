@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', static function (Blueprint $table) {
@@ -22,6 +19,13 @@ return new class extends Migration
             $table->boolean('is_onboarded')->default(false);
             $table->boolean('is_owner')->default(false);
             $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('user_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('category')->unique();
             $table->timestamps();
         });
 
@@ -41,12 +45,10 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('user_types');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
