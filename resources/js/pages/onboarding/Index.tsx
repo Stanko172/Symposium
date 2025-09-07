@@ -1,14 +1,21 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { CheckCircle2, GraduationCap, Globe, University, Building2, BookOpen } from "lucide-react";
-import { Head } from '@inertiajs/react';
+import { CheckCircle2, GraduationCap, Globe, University as UniversityIcon, Building2, BookOpen } from "lucide-react";
+import { Head, router, useForm } from '@inertiajs/react';
 import OnboardingLayout from '@/layouts/onboarding/layout';
+import type { Country, University, UserType} from '@/types';
+import { UserTypeCategory } from '@/types';
 
-export default function OnboardingIndex() {
-    const [formData, setFormData] = useState({
+interface OnboardingIndexProps {
+    countries: Country[];
+    universities: University[];
+    userTypes: UserType[];
+}
+
+export default function OnboardingIndex({ countries, universities, userTypes }: OnboardingIndexProps) {
+    const { data, setData, post, processing, errors } = useForm({
         role: "",
         country: "",
         university: "",
@@ -17,16 +24,16 @@ export default function OnboardingIndex() {
     });
 
     const handleSave = () => {
-        console.log("Form data:", formData);
-        // Handle form submission here
+        console.log(data);
+        post('/onboarding');
     };
 
     const getRequiredFields = () => {
-        if (!formData.role) return [];
+        if (!data.role) return [];
 
-        if (formData.role === "business") {
+        if (data.role === UserTypeCategory.Business) {
             return ["role", "organization"];
-        } else if (formData.role === "student") {
+        } else if (data.role === UserTypeCategory.Student) {
             return ["role", "country", "university", "programOfStudy"];
         } else {
             return ["role", "country", "university"];
@@ -36,7 +43,7 @@ export default function OnboardingIndex() {
     const getCompletedFields = () => {
         const requiredFields = getRequiredFields();
         return requiredFields.filter((field) => {
-            const value = formData[field as keyof typeof formData];
+            const value = data[field as keyof typeof data];
             return value && value.trim() !== "";
         });
     };
@@ -48,14 +55,14 @@ export default function OnboardingIndex() {
     };
 
     const isFormComplete = () => {
-        if (!formData.role) return false;
+        if (!data.role) return false;
 
-        if (formData.role === "student") {
-            return formData.country && formData.university && formData.programOfStudy;
-        } else if (formData.role === "business") {
-            return formData.organization;
+        if (data.role === UserTypeCategory.Student) {
+            return data.country && data.university && data.programOfStudy;
+        } else if (data.role === UserTypeCategory.Business) {
+            return data.organization;
         } else {
-            return formData.country && formData.university;
+            return data.country && data.university;
         }
     };
 
@@ -129,10 +136,10 @@ export default function OnboardingIndex() {
                                                     <GraduationCap className="w-4 h-4" />I am a
                                                 </label>
                                                 <Select
-                                                    value={formData.role}
+                                                    value={data.role}
                                                     onValueChange={(value) =>
-                                                        setFormData({
-                                                            ...formData,
+                                                        setData({
+                                                            ...data,
                                                             role: value,
                                                             country: "",
                                                             university: "",
@@ -145,14 +152,16 @@ export default function OnboardingIndex() {
                                                         <SelectValue placeholder="Select your role" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="researcher">Researcher / Professor / PhD candidate</SelectItem>
-                                                        <SelectItem value="student">Student (bachelor / master)</SelectItem>
-                                                        <SelectItem value="business">Business or other</SelectItem>
+                                                        {userTypes.map((userType) => (
+                                                            <SelectItem key={userType.id} value={userType.category}>
+                                                                {userType.name}
+                                                            </SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                             </div>
 
-                                            {formData.role === "business" ? (
+                                            {data.role === UserTypeCategory.Business ? (
                                                 <div className="space-y-2">
                                                     <label className="text-sm font-medium flex items-center gap-2">
                                                         <Building2 className="w-4 h-4" />
@@ -160,10 +169,11 @@ export default function OnboardingIndex() {
                                                     </label>
                                                     <Input
                                                         placeholder="Enter your organization name"
-                                                        value={formData.organization}
-                                                        onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
+                                                        value={data.organization}
+                                                        onChange={(e) => setData({ ...data, organization: e.target.value })}
                                                         className="h-12"
                                                     />
+                                                    {errors.organization && <p className="text-sm text-red-500">{errors.organization}</p>}
                                                 </div>
                                             ) : (
                                                 <>
@@ -173,53 +183,56 @@ export default function OnboardingIndex() {
                                                             My country
                                                         </label>
                                                         <Select
-                                                            value={formData.country}
-                                                            onValueChange={(value) => setFormData({ ...formData, country: value, university: "" })}
+                                                            value={data.country}
+                                                            onValueChange={(value) => {
+                                                                setData({ ...data, country: value, university: "" });
+                                                                router.post('/onboarding', {
+                                                                    country: value
+                                                                }, {
+                                                                    preserveState: true,
+                                                                    preserveScroll: true,
+                                                                });
+                                                            }}
                                                         >
                                                             <SelectTrigger className="h-12">
-                                                                <SelectValue
-                                                                    placeholder={!formData.country ? "Select country first" : "Select your country"}
-                                                                />
+                                                                <SelectValue placeholder="Select your country" />
                                                             </SelectTrigger>
                                                             <SelectContent>
-                                                                <SelectItem value="us">United States</SelectItem>
-                                                                <SelectItem value="uk">United Kingdom</SelectItem>
-                                                                <SelectItem value="ca">Canada</SelectItem>
-                                                                <SelectItem value="au">Australia</SelectItem>
-                                                                <SelectItem value="de">Germany</SelectItem>
-                                                                <SelectItem value="fr">France</SelectItem>
-                                                                <SelectItem value="other">Other</SelectItem>
+                                                                {countries.map((country) => (
+                                                                    <SelectItem key={country.id} value={country.code}>
+                                                                        {country.name}
+                                                                    </SelectItem>
+                                                                ))}
                                                             </SelectContent>
                                                         </Select>
                                                     </div>
 
                                                     <div className="space-y-2">
                                                         <label className="text-sm font-medium flex items-center gap-2">
-                                                            <University className="w-4 h-4" />
+                                                            <UniversityIcon className="w-4 h-4" />
                                                             University
                                                         </label>
                                                         <Select
-                                                            value={formData.university}
-                                                            onValueChange={(value) => setFormData({ ...formData, university: value })}
-                                                            disabled={!formData.country}
+                                                            value={data.university}
+                                                            onValueChange={(value) => setData({ ...data, university: value })}
+                                                            disabled={!data.country}
                                                         >
                                                             <SelectTrigger className="h-12">
                                                                 <SelectValue
-                                                                    placeholder={!formData.country ? "Select country first" : "Select your university"}
+                                                                    placeholder={!data.country ? "Select country first" : "Select your university"}
                                                                 />
                                                             </SelectTrigger>
                                                             <SelectContent>
-                                                                <SelectItem value="harvard">Harvard University</SelectItem>
-                                                                <SelectItem value="mit">MIT</SelectItem>
-                                                                <SelectItem value="stanford">Stanford University</SelectItem>
-                                                                <SelectItem value="oxford">Oxford University</SelectItem>
-                                                                <SelectItem value="cambridge">Cambridge University</SelectItem>
-                                                                <SelectItem value="other">Other</SelectItem>
+                                                                {universities.map((university) => (
+                                                                    <SelectItem key={university.id} value={university.id.toString()}>
+                                                                        {university.name}
+                                                                    </SelectItem>
+                                                                ))}
                                                             </SelectContent>
                                                         </Select>
                                                     </div>
 
-                                                    {formData.role === "student" && (
+                                                    {data.role === UserTypeCategory.Student && (
                                                         <div className="space-y-2">
                                                             <label className="text-sm font-medium flex items-center gap-2">
                                                                 <BookOpen className="w-4 h-4" />
@@ -227,17 +240,20 @@ export default function OnboardingIndex() {
                                                             </label>
                                                             <Input
                                                                 placeholder="e.g., Computer Science, Biology, etc."
-                                                                value={formData.programOfStudy}
-                                                                onChange={(e) => setFormData({ ...formData, programOfStudy: e.target.value })}
+                                                                value={data.programOfStudy}
+                                                                onChange={(e) => setData({ ...data, programOfStudy: e.target.value })}
                                                                 className="h-12"
                                                             />
+                                                            {errors.programOfStudy && <p className="text-sm text-red-500">{errors.programOfStudy}</p>}
                                                         </div>
                                                     )}
                                                 </>
                                             )}
 
-                                            <Button onClick={handleSave} className="w-full h-12 text-base font-medium" disabled={!formComplete}>
-                                                {formComplete ? (
+                                            <Button onClick={handleSave} className="w-full h-12 text-base font-medium" disabled={!formComplete || processing}>
+                                                {processing ? (
+                                                    "Submitting..."
+                                                ) : formComplete ? (
                                                     <>
                                                         <CheckCircle2 className="w-4 h-4 mr-2" />
                                                         Complete Setup
