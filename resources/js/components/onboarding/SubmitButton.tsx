@@ -4,14 +4,14 @@ import { CheckCircle2 } from "lucide-react";
 interface SubmitButtonProps {
     isComplete: boolean;
     processing: boolean;
-    onClick: () => void;
+    onClick?: () => void;
 }
 
 export default function SubmitButton({ isComplete, processing, onClick }: SubmitButtonProps) {
     return (
         <>
             <Button 
-                onClick={onClick} 
+                type="submit"
                 className="w-full h-12 text-base font-medium" 
                 disabled={!isComplete || processing}
             >

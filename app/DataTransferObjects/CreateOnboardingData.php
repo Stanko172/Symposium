@@ -6,11 +6,9 @@ namespace App\DataTransferObjects;
 
 use Spatie\LaravelData\Data;
 
-final class CountryData extends Data
+final class CreateOnboardingData extends Data
 {
     public function __construct(
-        public int $id,
-        public string $name,
-        public string $code,
+        public ?int $countryId,
     ) {}
 }

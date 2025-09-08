@@ -15,16 +15,11 @@ Route::middleware('auth')
     ->middleware('verified')
     ->prefix('onboarding')
     ->group(function () {
-        Route::match(['GET', 'POST'], '/', [OnboardingController::class, 'create'])
-            ->name('onboarding');
-        Route::post( '/store', [OnboardingController::class, 'store'])
+        Route::get('/', [OnboardingController::class, 'create'])
+            ->name('onboarding.create');
+        Route::post( '/', [OnboardingController::class, 'store'])
             ->name('onboarding.store');
     });
-
-Route::middleware('auth')
-    ->middleware('verified')
-    ->match(['GET', 'POST'], '/onboarding', [OnboardingController::class, 'create'])
-    ->name('onboarding.create');
 
 Route::middleware('auth')
     ->middleware('verified')

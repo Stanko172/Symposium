@@ -20,7 +20,7 @@ export default function RoleSelector({ userTypes, value, onValueChange }: RoleSe
                 </SelectTrigger>
                 <SelectContent>
                     {userTypes.map((userType) => (
-                        <SelectItem key={userType.id} value={userType.category}>
+                        <SelectItem key={userType.id} value={userType.id.toString()}>
                             {userType.name}
                         </SelectItem>
                     ))}

@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import OnboardingLayout from '@/layouts/onboarding/layout';
 import OnboardingHero from '@/components/onboarding/OnboardingHero';
 import OnboardingForm from '@/components/onboarding/OnboardingForm';
@@ -13,29 +13,43 @@ interface OnboardingIndexProps {
 
 export default function OnboardingIndex({ countries, universities, userTypes }: OnboardingIndexProps) {
     const { data, setData, post, processing, errors } = useForm({
-        role: "",
-        country: "",
-        university: "",
+        userTypeId: null as number | null,
+        countryId: null as number | null,
+        universityId: null as number | null,
         programOfStudy: "",
         organization: "",
     });
 
-    const handleSave = () => {
-        post('/onboarding/store');
+    const handleSave = (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault();
+        }
+        console.log('data: ', data);
+        post('/onboarding', {
+            onError: (errors) => {
+                console.log('Form errors:', errors);
+            },
+            onSuccess: () => {
+                console.log('Form submitted successfully');
+            }
+        });
     };
 
     const getRequiredFields = () => {
-        if (!data.role) return [];
+        if (!data.userTypeId) return [];
 
-        switch (data.role) {
+        const userType = userTypes.find(type => type.id === data.userTypeId);
+        if (!userType) return [];
+
+        switch (userType.category) {
             case UserTypeCategory.Student:
-                return ["role", "country", "university", "programOfStudy"];
+                return ["userTypeId", "countryId", "universityId", "programOfStudy"];
             case UserTypeCategory.Business:
-                return ["role", "organization"];
+                return ["userTypeId", "organization"];
             case UserTypeCategory.AcademicStaff:
-                return ["role", "country", "university"];
+                return ["userTypeId", "countryId", "universityId"];
             default:
-                throw new Error("Invalid role");
+                return ["userTypeId"];
         }
     };
 
@@ -43,7 +57,10 @@ export default function OnboardingIndex({ countries, universities, userTypes }: 
         const requiredFields = getRequiredFields();
         return requiredFields.filter((field) => {
             const value = data[field as keyof typeof data];
-            return value && value.trim() !== "";
+            if (field === 'programOfStudy' || field === 'organization') {
+                return value && typeof value === 'string' && value.trim() !== "";
+            }
+            return value !== null && value !== undefined;
         });
     };
 
@@ -54,14 +71,17 @@ export default function OnboardingIndex({ countries, universities, userTypes }: 
     };
 
     const isFormComplete = (): boolean => {
-        if (!data.role) return false;
+        if (!data.userTypeId) return false;
 
-        if (data.role === UserTypeCategory.Student) {
-            return !!(data.country && data.university && data.programOfStudy);
-        } else if (data.role === UserTypeCategory.Business) {
-            return !!data.organization;
+        const userType = userTypes.find(type => type.id === data.userTypeId);
+        if (!userType) return false;
+
+        if (userType.category === UserTypeCategory.Student) {
+            return !!(data.countryId && data.universityId && data.programOfStudy && data.programOfStudy.trim());
+        } else if (userType.category === UserTypeCategory.Business) {
+            return !!(data.organization && data.organization.trim());
         } else {
-            return !!(data.country && data.university);
+            return !!(data.countryId && data.universityId);
         }
     };
 

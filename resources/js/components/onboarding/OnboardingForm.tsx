@@ -12,9 +12,9 @@ interface OnboardingFormProps {
     universities: University[];
     userTypes: UserType[];
     data: {
-        role: string;
-        country: string;
-        university: string;
+        userTypeId: number | null;
+        countryId: number | null;
+        universityId: number | null;
         programOfStudy: string;
         organization: string;
     };
@@ -45,20 +45,20 @@ export default function OnboardingForm({
     const handleRoleChange = (value: string) => {
         setData({
             ...data,
-            role: value,
-            country: "",
-            university: "",
+            userTypeId: parseInt(value),
+            countryId: null,
+            universityId: null,
             programOfStudy: "",
             organization: "",
         });
     };
 
-    const handleCountryChange = (country: string) => {
-        setData({ ...data, country: country, university: "" });
+    const handleCountryChange = (countryId: string) => {
+        setData({ ...data, countryId: parseInt(countryId), universityId: null });
     };
 
-    const handleUniversityChange = (university: string) => {
-        setData({ ...data, university });
+    const handleUniversityChange = (universityId: string) => {
+        setData({ ...data, universityId: parseInt(universityId) });
     };
 
     const handleProgramOfStudyChange = (programOfStudy: string) => {
@@ -79,7 +79,7 @@ export default function OnboardingForm({
                             <CardDescription className="text-base">We need a bit more info to get you started</CardDescription>
                         </div>
 
-                        <OnboardingProgress 
+                        <OnboardingProgress
                             completedFields={completedFields}
                             totalFields={totalFields}
                             progressPercentage={progressPercentage}
@@ -87,38 +87,45 @@ export default function OnboardingForm({
                     </CardHeader>
 
                     <CardContent className="space-y-6">
-                        <RoleSelector 
-                            userTypes={userTypes}
-                            value={data.role}
-                            onValueChange={handleRoleChange}
-                        />
+                        <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+                            <div className="space-y-6">
+                                <RoleSelector
+                                    userTypes={userTypes}
+                                    value={data.userTypeId?.toString() || ""}
+                                    onValueChange={handleRoleChange}
+                                />
 
-                        {data.role === UserTypeCategory.Business ? (
-                            <BusinessFields 
-                                organization={data.organization}
-                                onOrganizationChange={handleOrganizationChange}
-                                error={errors.organization}
-                            />
-                        ) : (
-                            <AcademicFields 
-                                countries={countries}
-                                universities={universities}
-                                country={data.country}
-                                university={data.university}
-                                programOfStudy={data.programOfStudy}
-                                role={data.role}
-                                onCountryChange={handleCountryChange}
-                                onUniversityChange={handleUniversityChange}
-                                onProgramOfStudyChange={handleProgramOfStudyChange}
-                                programOfStudyError={errors.programOfStudy}
-                            />
-                        )}
+                                {(() => {
+                                    const userType = userTypes.find(type => type.id === data.userTypeId);
+                                    return userType?.category === UserTypeCategory.Business;
+                                })() ? (
+                                    <BusinessFields
+                                        organization={data.organization}
+                                        onOrganizationChange={handleOrganizationChange}
+                                        error={errors.organization}
+                                    />
+                                ) : (
+                                    <AcademicFields
+                                        countries={countries}
+                                        universities={universities}
+                                        countryId={data.countryId}
+                                        universityId={data.universityId}
+                                        programOfStudy={data.programOfStudy}
+                                        roleCategory={userTypes.find(type => type.id === data.userTypeId)?.category || null}
+                                        onCountryChange={handleCountryChange}
+                                        onUniversityChange={handleUniversityChange}
+                                        onProgramOfStudyChange={handleProgramOfStudyChange}
+                                        programOfStudyError={errors.programOfStudy}
+                                    />
+                                )}
 
-                        <SubmitButton 
-                            isComplete={isComplete}
-                            processing={processing}
-                            onClick={onSubmit}
-                        />
+                                <SubmitButton
+                                    isComplete={isComplete}
+                                    processing={processing}
+                                    onClick={onSubmit}
+                                />
+                            </div>
+                        </form>
                     </CardContent>
                 </Card>
             </div>

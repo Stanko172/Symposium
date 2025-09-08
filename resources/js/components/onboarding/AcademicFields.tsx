@@ -8,12 +8,12 @@ import { UserTypeCategory } from '@/types';
 interface AcademicFieldsProps {
     countries: Country[];
     universities: University[];
-    country: string;
-    university: string;
+    countryId: number | null;
+    universityId: number | null;
     programOfStudy: string;
-    role: string;
-    onCountryChange: (country: string) => void;
-    onUniversityChange: (university: string) => void;
+    roleCategory: string | null;
+    onCountryChange: (countryId: string) => void;
+    onUniversityChange: (universityId: string) => void;
     onProgramOfStudyChange: (program: string) => void;
     programOfStudyError?: string;
 }
@@ -21,10 +21,10 @@ interface AcademicFieldsProps {
 export default function AcademicFields({
     countries,
     universities,
-    country,
-    university,
+    countryId,
+    universityId,
     programOfStudy,
-    role,
+    roleCategory,
     onCountryChange,
     onUniversityChange,
     onProgramOfStudyChange,
@@ -32,13 +32,16 @@ export default function AcademicFields({
 }: AcademicFieldsProps) {
     const handleCountryChange = (value: string) => {
         onCountryChange(value);
-        router.post('/onboarding', {
-            country: value
+        router.get('/onboarding', {
+            countryId: parseInt(value)
         }, {
             preserveState: true,
             preserveScroll: true,
         });
     };
+
+    console.log('countries 123: ', countries)
+    console.log('universities 123: ', universities)
 
     return (
         <>
@@ -47,13 +50,13 @@ export default function AcademicFields({
                     <Globe className="w-4 h-4" />
                     My country
                 </label>
-                <Select value={country} onValueChange={handleCountryChange}>
+                <Select value={countryId?.toString() || ""} onValueChange={handleCountryChange}>
                     <SelectTrigger className="h-12">
                         <SelectValue placeholder="Select your country" />
                     </SelectTrigger>
                     <SelectContent>
-                        {countries.map((country) => (
-                            <SelectItem key={country.id} value={country.code}>
+                        {countries.filter(country => country.id != null).map((country) => (
+                            <SelectItem key={`country-${country.id}`} value={country.id.toString()}>
                                 {country.name}
                             </SelectItem>
                         ))}
@@ -67,18 +70,18 @@ export default function AcademicFields({
                     University
                 </label>
                 <Select
-                    value={university}
+                    value={universityId?.toString() || ""}
                     onValueChange={onUniversityChange}
-                    disabled={!country}
+                    disabled={!countryId}
                 >
                     <SelectTrigger className="h-12">
                         <SelectValue
-                            placeholder={!country ? "Select country first" : "Select your university"}
+                            placeholder={!countryId ? "Select country first" : "Select your university"}
                         />
                     </SelectTrigger>
                     <SelectContent>
-                        {universities.map((university) => (
-                            <SelectItem key={university.id} value={university.id.toString()}>
+                        {universities.filter(university => university.id != null).map((university) => (
+                            <SelectItem key={`university-${university.id}`} value={university.id.toString()}>
                                 {university.name}
                             </SelectItem>
                         ))}
@@ -86,7 +89,7 @@ export default function AcademicFields({
                 </Select>
             </div>
 
-            {role === UserTypeCategory.Student && (
+            {roleCategory === UserTypeCategory.Student && (
                 <div className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-2">
                         <BookOpen className="w-4 h-4" />
