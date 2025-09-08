@@ -16,7 +16,7 @@ use Inertia\Response;
 
 final class OnboardingController extends Controller
 {
-    public function index(Request $request): Response
+    public function create(Request $request): Response
     {
         $country = optional($request->input('country'), static fn($country) => Country::query()->where('code', $country)->first());
 
@@ -26,7 +26,7 @@ final class OnboardingController extends Controller
     public function store(StoreOnboardingData $request): RedirectResponse
     {
         // TODO: Store onboarding data
-        ray($request->toArray())->blue();
+        ray("stanko: ", $request->toArray())->blue();
 
         return redirect()->route('dashboard')->with('success', 'Onboarding completed successfully!');
     }

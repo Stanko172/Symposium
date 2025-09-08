@@ -10,10 +10,21 @@ Route::get('/', static function () {
     return Inertia::render('welcome');
 })->name('home');
 
+
 Route::middleware('auth')
     ->middleware('verified')
-    ->match(['GET', 'POST'], '/onboarding', [OnboardingController::class, 'index'])
-    ->name('onboarding.index');
+    ->prefix('onboarding')
+    ->group(function () {
+        Route::match(['GET', 'POST'], '/', [OnboardingController::class, 'create'])
+            ->name('onboarding');
+        Route::post( '/store', [OnboardingController::class, 'store'])
+            ->name('onboarding.store');
+    });
+
+Route::middleware('auth')
+    ->middleware('verified')
+    ->match(['GET', 'POST'], '/onboarding', [OnboardingController::class, 'create'])
+    ->name('onboarding.create');
 
 Route::middleware('auth')
     ->middleware('verified')
