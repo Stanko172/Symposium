@@ -38,6 +38,9 @@ final class User extends Authenticatable implements MustVerifyEmail
         return $this->is_owner;
     }
 
+    /**
+     * @return HasOne<OnboardingData, $this>
+     */
     public function onboardingData(): HasOne
     {
         return $this->hasOne(OnboardingData::class);

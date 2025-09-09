@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property-read int $id
  * @property-read string $name
- * @property-read array|null $domains
- * @property-read array|null $web_pages
+ * @property-read array<int, string>|null $domains
+ * @property-read array<int, string>|null $web_pages
  * @property-read int $country_id
  * @property-read Country $country
  * @property-read CarbonImmutable $created_at
@@ -30,6 +30,9 @@ final class University extends Model
         'web_pages' => 'array',
     ];
 
+    /**
+     * @return BelongsTo<Country, $this>
+     */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);

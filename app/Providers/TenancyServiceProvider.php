@@ -17,6 +17,9 @@ final class TenancyServiceProvider extends ServiceProvider
 {
     public static string $controllerNamespace = '';
 
+    /**
+     * @return array<class-string, array<int, class-string|JobPipeline>>
+     */
     public function events(): array
     {
         return [
@@ -134,7 +137,8 @@ final class TenancyServiceProvider extends ServiceProvider
         ];
 
         foreach (array_reverse($tenancyMiddleware) as $middleware) {
-            $this->app[\Illuminate\Contracts\Http\Kernel::class]->prependToMiddlewarePriority($middleware);
+            $kernel = $this->app->make(\Illuminate\Contracts\Http\Kernel::class);
+            $kernel->prependToMiddlewarePriority($middleware);
         }
     }
 }

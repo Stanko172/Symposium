@@ -23,6 +23,9 @@ final class Country extends Model
     /** @use HasFactory<CountryFactory> */
     use HasFactory;
 
+    /**
+     * @return HasMany<University, $this>
+     */
     public function universities(): HasMany
     {
         return $this->hasMany(University::class);

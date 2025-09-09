@@ -26,21 +26,33 @@ final class OnboardingData extends Model
     /** @use HasFactory<OnboardingDataFactory> */
     use HasFactory;
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsTo<UserType, $this>
+     */
     public function userType(): BelongsTo
     {
         return $this->belongsTo(UserType::class);
     }
 
+    /**
+     * @return BelongsTo<Country, $this>
+     */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }
 
+    /**
+     * @return BelongsTo<University, $this>
+     */
     public function university(): BelongsTo
     {
         return $this->belongsTo(University::class);

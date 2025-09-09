@@ -12,7 +12,7 @@ final class EnsureOnboarded
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()->isOnboarded()) {
+        if (! $request->user()?->isOnboarded()) {
             return to_route('onboarding.create');
         }
 

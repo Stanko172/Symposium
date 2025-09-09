@@ -10,8 +10,14 @@ use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
 
+/**
+ * @implements Arrayable<string, mixed>
+ */
 abstract class ViewModel implements Arrayable
 {
+    /**
+     * @return array<string, mixed>
+     */
     final public function toArray(): array
     {
         return collect((new ReflectionClass($this))->getMethods())

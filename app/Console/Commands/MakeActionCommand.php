@@ -43,12 +43,12 @@ final class MakeActionCommand extends GeneratorCommand
         return $this->resolveStubPath('/stubs/action.stub');
     }
 
-    protected function getDefaultNamespace($rootNamespace): string
+    protected function getDefaultNamespace($rootNamespace): string // @pest-ignore-type
     {
         return $rootNamespace.'\Actions';
     }
 
-    protected function getPath($name): string
+    protected function getPath($name): string // @pest-ignore-type
     {
         $name = Str::replaceFirst($this->rootNamespace(), '', $name);
 

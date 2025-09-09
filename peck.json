@@ -1,0 +1,19 @@
+{
+    "preset": "laravel",
+    "ignore": {
+        "words": [
+            "php",
+            "onboarding",
+            "onboarded",
+            "favicon"
+        ],
+        "paths": [
+            "resources/",
+            "stubs/",
+            "config/",
+            "coverage/",
+            "tsconfig.json",
+            "eslint.config.js"
+        ]
+    }
+}
