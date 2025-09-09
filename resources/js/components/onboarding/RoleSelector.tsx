@@ -1,6 +1,6 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { UserType } from '@/types';
+import { GraduationCap } from 'lucide-react';
 
 interface RoleSelectorProps {
     userTypes: UserType[];
@@ -11,8 +11,8 @@ interface RoleSelectorProps {
 export default function RoleSelector({ userTypes, value, onValueChange }: RoleSelectorProps) {
     return (
         <div className="space-y-2">
-            <label className="text-sm font-medium flex items-center gap-2">
-                <GraduationCap className="w-4 h-4" />I am a
+            <label className="flex items-center gap-2 text-sm font-medium">
+                <GraduationCap className="h-4 w-4" />I am a
             </label>
             <Select value={value} onValueChange={onValueChange}>
                 <SelectTrigger className="h-12">

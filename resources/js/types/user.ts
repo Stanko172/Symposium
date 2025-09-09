@@ -20,4 +20,3 @@ export interface SharedData {
     sidebarOpen: boolean;
     [key: string]: unknown;
 }
-

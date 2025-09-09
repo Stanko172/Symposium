@@ -1,55 +1,38 @@
-import { Head, useForm, router } from '@inertiajs/react';
-import OnboardingLayout from '@/layouts/onboarding/layout';
-import OnboardingHero from '@/components/onboarding/OnboardingHero';
 import OnboardingForm from '@/components/onboarding/OnboardingForm';
-import type { Country, University, UserType} from '@/types';
+import OnboardingHero from '@/components/onboarding/OnboardingHero';
+import OnboardingLayout from '@/layouts/onboarding/layout';
+import type { OnboardingIndexProps } from '@/types';
 import { UserTypeCategory } from '@/types';
-
-interface OnboardingIndexProps {
-    countries: Country[];
-    universities: University[];
-    userTypes: UserType[];
-}
+import { Head, useForm } from '@inertiajs/react';
 
 export default function OnboardingIndex({ countries, universities, userTypes }: OnboardingIndexProps) {
     const { data, setData, post, processing, errors } = useForm({
         userTypeId: null as number | null,
         countryId: null as number | null,
         universityId: null as number | null,
-        programOfStudy: "",
-        organization: "",
+        programOfStudy: '',
+        organization: '',
     });
 
-    const handleSave = (e?: React.FormEvent) => {
-        if (e) {
-            e.preventDefault();
-        }
-        console.log('data: ', data);
-        post('/onboarding', {
-            onError: (errors) => {
-                console.log('Form errors:', errors);
-            },
-            onSuccess: () => {
-                console.log('Form submitted successfully');
-            }
-        });
+    const handleSave = () => {
+        post('/onboarding');
     };
 
     const getRequiredFields = () => {
         if (!data.userTypeId) return [];
 
-        const userType = userTypes.find(type => type.id === data.userTypeId);
+        const userType = userTypes.find((type) => type.id === data.userTypeId);
         if (!userType) return [];
 
         switch (userType.category) {
             case UserTypeCategory.Student:
-                return ["userTypeId", "countryId", "universityId", "programOfStudy"];
+                return ['userTypeId', 'countryId', 'universityId', 'programOfStudy'];
             case UserTypeCategory.Business:
-                return ["userTypeId", "organization"];
+                return ['userTypeId', 'organization'];
             case UserTypeCategory.AcademicStaff:
-                return ["userTypeId", "countryId", "universityId"];
+                return ['userTypeId', 'countryId', 'universityId'];
             default:
-                return ["userTypeId"];
+                return ['userTypeId'];
         }
     };
 
@@ -58,7 +41,7 @@ export default function OnboardingIndex({ countries, universities, userTypes }: 
         return requiredFields.filter((field) => {
             const value = data[field as keyof typeof data];
             if (field === 'programOfStudy' || field === 'organization') {
-                return value && typeof value === 'string' && value.trim() !== "";
+                return value && typeof value === 'string' && value.trim() !== '';
             }
             return value !== null && value !== undefined;
         });
@@ -73,7 +56,7 @@ export default function OnboardingIndex({ countries, universities, userTypes }: 
     const isFormComplete = (): boolean => {
         if (!data.userTypeId) return false;
 
-        const userType = userTypes.find(type => type.id === data.userTypeId);
+        const userType = userTypes.find((type) => type.id === data.userTypeId);
         if (!userType) return false;
 
         if (userType.category === UserTypeCategory.Student) {
@@ -91,7 +74,7 @@ export default function OnboardingIndex({ countries, universities, userTypes }: 
         <OnboardingLayout>
             <Head title="Onboarding" />
             <div className="container mx-auto px-4 py-8">
-                <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center justify-center max-w-5xl mx-auto">
+                <div className="mx-auto grid max-w-5xl items-center justify-center gap-8 lg:grid-cols-2 lg:gap-16">
                     <OnboardingHero />
                     <OnboardingForm
                         countries={countries}

@@ -1,5 +1,5 @@
-import { Input } from "@/components/ui/input";
-import { Building2 } from "lucide-react";
+import { Input } from '@/components/ui/input';
+import { Building2 } from 'lucide-react';
 
 interface BusinessFieldsProps {
     organization: string;
@@ -7,15 +7,11 @@ interface BusinessFieldsProps {
     error?: string;
 }
 
-export default function BusinessFields({ 
-    organization, 
-    onOrganizationChange, 
-    error 
-}: BusinessFieldsProps) {
+export default function BusinessFields({ organization, onOrganizationChange, error }: BusinessFieldsProps) {
     return (
         <div className="space-y-2">
-            <label className="text-sm font-medium flex items-center gap-2">
-                <Building2 className="w-4 h-4" />
+            <label className="flex items-center gap-2 text-sm font-medium">
+                <Building2 className="h-4 w-4" />
                 Your organization
             </label>
             <Input

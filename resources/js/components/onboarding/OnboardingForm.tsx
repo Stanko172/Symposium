@@ -1,24 +1,19 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import OnboardingProgress from "./OnboardingProgress";
-import RoleSelector from "./RoleSelector";
-import BusinessFields from "./BusinessFields";
-import AcademicFields from "./AcademicFields";
-import SubmitButton from "./SubmitButton";
-import type { Country, University, UserType } from '@/types';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import type { Country, OnboardingFormData, University, UserType } from '@/types';
 import { UserTypeCategory } from '@/types';
+import type { InertiaFormProps } from '@inertiajs/react';
+import AcademicFields from './AcademicFields';
+import BusinessFields from './BusinessFields';
+import OnboardingProgress from './OnboardingProgress';
+import RoleSelector from './RoleSelector';
+import SubmitButton from './SubmitButton';
 
 interface OnboardingFormProps {
     countries: Country[];
     universities: University[];
     userTypes: UserType[];
-    data: {
-        userTypeId: number | null;
-        countryId: number | null;
-        universityId: number | null;
-        programOfStudy: string;
-        organization: string;
-    };
-    setData: (data: any) => void;
+    data: OnboardingFormData;
+    setData: InertiaFormProps<OnboardingFormData>['setData'];
     errors: Record<string, string>;
     processing: boolean;
     completedFields: number;
@@ -40,7 +35,7 @@ export default function OnboardingForm({
     totalFields,
     progressPercentage,
     isComplete,
-    onSubmit
+    onSubmit,
 }: OnboardingFormProps) {
     const handleRoleChange = (value: string) => {
         setData({
@@ -48,8 +43,8 @@ export default function OnboardingForm({
             userTypeId: parseInt(value),
             countryId: null,
             universityId: null,
-            programOfStudy: "",
-            organization: "",
+            programOfStudy: '',
+            organization: '',
         });
     };
 
@@ -72,31 +67,28 @@ export default function OnboardingForm({
     return (
         <div className="flex justify-center lg:justify-end">
             <div className="w-full max-w-md">
-                <Card className="bg-card border shadow-xl">
+                <Card className="border bg-card shadow-xl">
                     <CardHeader className="space-y-4 pb-6">
                         <div className="space-y-2">
                             <CardTitle className="text-2xl text-balance">You're almost there...</CardTitle>
                             <CardDescription className="text-base">We need a bit more info to get you started</CardDescription>
                         </div>
 
-                        <OnboardingProgress
-                            completedFields={completedFields}
-                            totalFields={totalFields}
-                            progressPercentage={progressPercentage}
-                        />
+                        <OnboardingProgress completedFields={completedFields} totalFields={totalFields} progressPercentage={progressPercentage} />
                     </CardHeader>
 
                     <CardContent className="space-y-6">
-                        <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                onSubmit();
+                            }}
+                        >
                             <div className="space-y-6">
-                                <RoleSelector
-                                    userTypes={userTypes}
-                                    value={data.userTypeId?.toString() || ""}
-                                    onValueChange={handleRoleChange}
-                                />
+                                <RoleSelector userTypes={userTypes} value={data.userTypeId?.toString() || ''} onValueChange={handleRoleChange} />
 
                                 {(() => {
-                                    const userType = userTypes.find(type => type.id === data.userTypeId);
+                                    const userType = userTypes.find((type) => type.id === data.userTypeId);
                                     return userType?.category === UserTypeCategory.Business;
                                 })() ? (
                                     <BusinessFields
@@ -111,7 +103,7 @@ export default function OnboardingForm({
                                         countryId={data.countryId}
                                         universityId={data.universityId}
                                         programOfStudy={data.programOfStudy}
-                                        roleCategory={userTypes.find(type => type.id === data.userTypeId)?.category || null}
+                                        roleCategory={userTypes.find((type) => type.id === data.userTypeId)?.category || null}
                                         onCountryChange={handleCountryChange}
                                         onUniversityChange={handleUniversityChange}
                                         onProgramOfStudyChange={handleProgramOfStudyChange}
@@ -119,11 +111,7 @@ export default function OnboardingForm({
                                     />
                                 )}
 
-                                <SubmitButton
-                                    isComplete={isComplete}
-                                    processing={processing}
-                                    onClick={onSubmit}
-                                />
+                                <SubmitButton isComplete={isComplete} processing={processing} onClick={onSubmit} />
                             </div>
                         </form>
                     </CardContent>

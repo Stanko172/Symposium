@@ -4,24 +4,17 @@ interface OnboardingProgressProps {
     progressPercentage: number;
 }
 
-export default function OnboardingProgress({ 
-    completedFields, 
-    totalFields, 
-    progressPercentage 
-}: OnboardingProgressProps) {
+export default function OnboardingProgress({ completedFields, totalFields, progressPercentage }: OnboardingProgressProps) {
     return (
         <div className="space-y-2">
-            <div className="flex justify-between items-center text-sm">
+            <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Progress</span>
                 <span className="font-medium">
                     {completedFields} of {totalFields} completed
                 </span>
             </div>
-            <div className="w-full bg-muted rounded-full h-2">
-                <div
-                    className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
-                    style={{ width: `${progressPercentage}%` }}
-                />
+            <div className="h-2 w-full rounded-full bg-muted">
+                <div className="h-2 rounded-full bg-primary transition-all duration-300 ease-out" style={{ width: `${progressPercentage}%` }} />
             </div>
         </div>
     );
