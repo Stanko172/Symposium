@@ -30,7 +30,7 @@ final class OnboardingViewModel extends ViewModel
      */
     public function universities(): Collection
     {
-        return $this->country instanceof \App\Models\Country
+        return $this->country instanceof Country
             ? UniversityData::collect($this->country->universities)
             : collect();
     }

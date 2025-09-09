@@ -10,14 +10,13 @@ Route::get('/', static function () {
     return Inertia::render('welcome');
 })->name('home');
 
-
 Route::middleware('auth')
     ->middleware('verified')
     ->prefix('onboarding')
     ->group(function () {
         Route::get('/', [OnboardingController::class, 'create'])
             ->name('onboarding.create');
-        Route::post( '/', [OnboardingController::class, 'store'])
+        Route::post('/', [OnboardingController::class, 'store'])
             ->name('onboarding.store');
     });
 

@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read CarbonImmutable $created_at
  * @property-read CarbonImmutable $updated_at
  */
-class OnboardingData extends Model
+final class OnboardingData extends Model
 {
     /** @use HasFactory<OnboardingDataFactory> */
     use HasFactory;

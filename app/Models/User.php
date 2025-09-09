@@ -28,17 +28,6 @@ final class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
     public function isOnboarded(): bool
     {
         return $this->is_onboarded;
@@ -52,5 +41,16 @@ final class User extends Authenticatable implements MustVerifyEmail
     public function onboardingData(): HasOne
     {
         return $this->hasOne(OnboardingData::class);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
     }
 }
