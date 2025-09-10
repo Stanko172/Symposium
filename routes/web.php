@@ -10,8 +10,7 @@ Route::get('/', static function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::middleware('auth')
-    ->middleware('verified')
+Route::middleware(['auth', 'verified'])
     ->prefix('onboarding')
     ->group(function () {
         Route::get('/', [OnboardingController::class, 'create'])
@@ -20,9 +19,7 @@ Route::middleware('auth')
             ->name('onboarding.store');
     });
 
-Route::middleware('auth')
-    ->middleware('verified')
-    ->middleware('onboarded')
+Route::middleware(['auth', 'verified', 'onboarded'])
     ->group(function () {
         Route::get('dashboard', static function () {
             return Inertia::render('dashboard');

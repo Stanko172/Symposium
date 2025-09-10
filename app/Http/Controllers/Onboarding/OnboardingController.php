@@ -19,21 +19,14 @@ final class OnboardingController extends Controller
 {
     public function create(CreateOnboardingData $request): Response
     {
-        $country = $request->countryId !== null && $request->countryId !== 0
-            ? Country::query()->find($request->countryId)
-            : null;
+        $country = optional($request->countryId, static fn ($countryId) => Country::query()->find($countryId));
 
         return Inertia::render('onboarding/Index', new OnboardingViewModel($country));
     }
 
     public function store(StoreOnboardingData $onboardingData, OnboardUserAction $action): RedirectResponse
     {
-        $user = Auth::user();
-        if (! $user) {
-            return redirect()->route('login');
-        }
-
-        $action->handle($user, $onboardingData);
+        $action->handle(Auth::user(), $onboardingData);
 
         return redirect()->route('dashboard')->with('success', 'Onboarding completed successfully!');
     }
