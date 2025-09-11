@@ -30,10 +30,31 @@ final class UserFactory extends Factory
         ];
     }
 
-    public function unverified(): static
+    public function unverified(): UserFactory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    public function verified(): UserFactory
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => now(),
+        ]);
+    }
+
+    public function notOnboarded(): UserFactory
+    {
+        return $this->state(fn (array $attributes) => [
+           'is_onboarded' => false,
+        ]);
+    }
+
+    public function onboarded(): UserFactory
+    {
+        return $this->state(fn (array $attributes) => [
+           'is_onboarded' => true,
         ]);
     }
 }

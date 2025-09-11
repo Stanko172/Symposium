@@ -8,18 +8,18 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class EnsureOnboarded
+class EnsureNotOnboarded
 {
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
-        if ($user === null) {
+        if (! $user) {
             return $next($request);
         }
 
-        if (! $user->isOnboarded()) {
-            return to_route('onboarding.create');
+        if ($user->isOnboarded()) {
+            return to_route('dashboard');
         }
 
         return $next($request);

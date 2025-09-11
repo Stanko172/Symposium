@@ -16,6 +16,5 @@ test('new users can register', function (): void {
         'password_confirmation' => 'password',
     ]);
 
-    //    $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
 });
