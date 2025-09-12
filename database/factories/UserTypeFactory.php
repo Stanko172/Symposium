@@ -20,7 +20,7 @@ final class UserTypeFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
-            'type' => $this->faker->randomElement(UserCategory::cases())->value,
+            'category' => $this->faker->unique()->randomElement(UserCategory::cases())->value,
         ];
     }
 }

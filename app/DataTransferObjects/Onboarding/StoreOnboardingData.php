@@ -19,7 +19,7 @@ final class StoreOnboardingData extends Data
         public ?string $organization = null,
     ) {}
 
-    public function rules(): array
+    public static function rules(): array
     {
         return [
             'userTypeId' => ['required', 'exists:user_types,id'],

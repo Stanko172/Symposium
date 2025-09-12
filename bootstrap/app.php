@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'onboarded' => EnsureOnboarded::class,
-            'notOnboarded' => EnsureNotOnboarded::class
+            'notOnboarded' => EnsureNotOnboarded::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

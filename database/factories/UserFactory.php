@@ -27,34 +27,35 @@ final class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => self::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+
         ];
     }
 
-    public function unverified(): UserFactory
+    public function unverified(): self
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
 
-    public function verified(): UserFactory
+    public function verified(): self
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => now(),
         ]);
     }
 
-    public function notOnboarded(): UserFactory
+    public function notOnboarded(): self
     {
         return $this->state(fn (array $attributes) => [
-           'is_onboarded' => false,
+            'is_onboarded' => false,
         ]);
     }
 
-    public function onboarded(): UserFactory
+    public function onboarded(): self
     {
         return $this->state(fn (array $attributes) => [
-           'is_onboarded' => true,
+            'is_onboarded' => true,
         ]);
     }
 }
