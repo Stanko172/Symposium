@@ -11,7 +11,7 @@ export default function OnboardingHero() {
 
                 <div className="space-y-2">
                     <h1 className="text-4xl font-bold text-balance lg:text-5xl">
-                        Welcome to <span className="text-primary">Khadim AI</span>
+                        Welcome to <span className="text-primary">Symposium AI</span>
                     </h1>
                     <p className="text-lg text-pretty text-muted-foreground">Your intelligent research companion for academic excellence</p>
                 </div>
